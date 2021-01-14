@@ -39,7 +39,6 @@ import (
 	"github.com/openshift/installer/cmd/openshift-install/command"
 	"github.com/openshift/installer/pkg/asset"
 	"github.com/openshift/installer/pkg/asset/agent/agentconfig"
-	"github.com/openshift/installer/pkg/asset/cluster"
 	"github.com/openshift/installer/pkg/asset/installconfig"
 	"github.com/openshift/installer/pkg/asset/kubeconfig"
 	"github.com/openshift/installer/pkg/asset/lbconfig"
@@ -314,8 +313,6 @@ func runTargetCmd(ctx context.Context, targets ...asset.WritableAsset) func(cmd 
 
 		cleanup := command.SetupFileHook(command.RootOpts.Dir)
 		defer cleanup()
-
-		cluster.InstallDir = command.RootOpts.Dir
 
 		err := runner(command.RootOpts.Dir)
 		if err != nil {
