@@ -72,6 +72,9 @@ func (m *Manifests) Dependencies() []asset.Asset {
 		&bootkube.KubeSystemConfigmapRootCA{},
 		&bootkube.MachineConfigServerTLSSecret{},
 		&bootkube.OpenshiftConfigSecretPullSecret{},
+		&bootkube.AROWorkerRegistries{},
+		&bootkube.AROIngressService{},
+		&bootkube.ARODNSConfig{},
 	}
 }
 
@@ -141,23 +144,28 @@ func (m *Manifests) generateBootKubeManifests(dependencies asset.Parents) []*ass
 	installConfig := &installconfig.InstallConfig{}
 	mcsCertKey := &tls.MCSCertKey{}
 	rootCA := &tls.RootCA{}
+	aroDNSConfig := &bootkube.ARODNSConfig{}
 	dependencies.Get(
 		clusterID,
 		installConfig,
 		mcsCertKey,
 		rootCA,
+		aroDNSConfig,
 	)
 
 	templateData := &bootkubeTemplateData{
-		CVOCapabilities:  installConfig.Config.Capabilities,
-		CVOClusterID:     clusterID.UUID,
-		McsTLSCert:       base64.StdEncoding.EncodeToString(mcsCertKey.Cert()),
-		McsTLSKey:        base64.StdEncoding.EncodeToString(mcsCertKey.Key()),
-		PullSecretBase64: base64.StdEncoding.EncodeToString([]byte(installConfig.Config.PullSecret)),
-		RootCaCert:       string(rootCA.Cert()),
-		IsFCOS:           installConfig.Config.IsFCOS(),
-		IsSCOS:           installConfig.Config.IsSCOS(),
-		IsOKD:            installConfig.Config.IsOKD(),
+		CVOCapabilities:     installConfig.Config.Capabilities,
+		CVOClusterID:        clusterID.UUID,
+		McsTLSCert:          base64.StdEncoding.EncodeToString(mcsCertKey.Cert()),
+		McsTLSKey:           base64.StdEncoding.EncodeToString(mcsCertKey.Key()),
+		PullSecretBase64:    base64.StdEncoding.EncodeToString([]byte(installConfig.Config.PullSecret)),
+		RootCaCert:          string(rootCA.Cert()),
+		IsFCOS:              installConfig.Config.IsFCOS(),
+		IsSCOS:              installConfig.Config.IsSCOS(),
+		IsOKD:               installConfig.Config.IsOKD(),
+		AROWorkerRegistries: aroWorkerRegistries(installConfig.Config.ImageDigestSources),
+		AROIngressIP:        aroDNSConfig.IngressIP,
+		AROIngressInternal:  installConfig.Config.Publish == types.InternalPublishingStrategy,
 	}
 
 	files := []*asset.File{}
@@ -167,6 +175,8 @@ func (m *Manifests) generateBootKubeManifests(dependencies asset.Parents) []*ass
 		&bootkube.KubeSystemConfigmapRootCA{},
 		&bootkube.MachineConfigServerTLSSecret{},
 		&bootkube.OpenshiftConfigSecretPullSecret{},
+		&bootkube.AROWorkerRegistries{},
+		&bootkube.AROIngressService{},
 	} {
 		dependencies.Get(a)
 		for _, f := range a.Files() {
