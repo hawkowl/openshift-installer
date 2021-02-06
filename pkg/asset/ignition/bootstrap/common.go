@@ -250,7 +250,7 @@ func (a *Common) generateConfig(dependencies asset.Parents, templateData *bootst
 		a.Config.Storage.Files = append(a.Config.Storage.Files, hostnameFile)
 	}
 
-	dnsmasqIgnConfig, err := dnsmasq.Ignition3Config(installConfig.Config.ClusterDomain(), aroDNSConfig.APIIntIP, aroDNSConfig.IngressIP)
+	dnsmasqIgnConfig, err := dnsmasq.Ignition3Config(installConfig.Config.ClusterDomain(), aroDNSConfig.APIIntIP, aroDNSConfig.IngressIP, aroDNSConfig.GatewayDomains, aroDNSConfig.GatewayPrivateEndpointIP)
 	if err != nil {
 		return err
 	}
