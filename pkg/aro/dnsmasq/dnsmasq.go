@@ -10,7 +10,7 @@ import (
 	"github.com/Azure/go-autorest/autorest/to"
 	"github.com/coreos/go-semver/semver"
 	ign3types "github.com/coreos/ignition/v2/config/v3_2/types"
-	mcv1 "github.com/openshift/machine-config-operator/pkg/apis/machineconfiguration.openshift.io/v1"
+	mcfgv1 "github.com/openshift/api/machineconfiguration/v1"
 	"github.com/vincent-petithory/dataurl"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -153,7 +153,7 @@ func Ignition3Config(clusterDomain, apiIntIP, ingressIP string, gatewayDomains [
 	return ign, nil
 }
 
-func MachineConfig(clusterDomain, apiIntIP, ingressIP, role string, gatewayDomains []string, gatewayPrivateEndpointIP string, restartDnsmasq bool) (*mcv1.MachineConfig, error) {
+func MachineConfig(clusterDomain, apiIntIP, ingressIP, role string, gatewayDomains []string, gatewayPrivateEndpointIP string, restartDnsmasq bool) (*mcfgv1.MachineConfig, error) {
 	ignConfig, err := Ignition3Config(clusterDomain, apiIntIP, ingressIP, gatewayDomains, gatewayPrivateEndpointIP, restartDnsmasq)
 	if err != nil {
 		return nil, err
@@ -177,7 +177,7 @@ func MachineConfig(clusterDomain, apiIntIP, ingressIP, role string, gatewayDomai
 		return nil, err
 	}
 
-	return &mcv1.MachineConfig{
+	return &mcfgv1.MachineConfig{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: mcv1.SchemeGroupVersion.String(),
 			Kind:       "MachineConfig",
