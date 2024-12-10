@@ -179,7 +179,7 @@ func MachineConfig(clusterDomain, apiIntIP, ingressIP, role string, gatewayDomai
 
 	return &mcfgv1.MachineConfig{
 		TypeMeta: metav1.TypeMeta{
-			APIVersion: mcv1.SchemeGroupVersion.String(),
+			APIVersion: mcfgv1.SchemeGroupVersion.String(),
 			Kind:       "MachineConfig",
 		},
 		ObjectMeta: metav1.ObjectMeta{
@@ -188,7 +188,7 @@ func MachineConfig(clusterDomain, apiIntIP, ingressIP, role string, gatewayDomai
 				"machineconfiguration.openshift.io/role": role,
 			},
 		},
-		Spec: mcv1.MachineConfigSpec{
+		Spec: mcfgv1.MachineConfigSpec{
 			Config: rawExt,
 		},
 	}, nil
