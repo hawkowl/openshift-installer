@@ -73,7 +73,6 @@ func (m *Manifests) Dependencies() []asset.Asset {
 		&bootkube.KubeSystemConfigmapRootCA{},
 		&bootkube.MachineConfigServerTLSSecret{},
 		&bootkube.OpenshiftConfigSecretPullSecret{},
-		&bootkube.AROWorkerRegistries{},
 		&bootkube.AROIngressService{},
 		&bootkube.ARODNSConfig{},
 		&bootkube.AROImageRegistry{},
@@ -168,7 +167,6 @@ func (m *Manifests) generateBootKubeManifests(dependencies asset.Parents) []*ass
 		IsFCOS:                        installConfig.Config.IsFCOS(),
 		IsSCOS:                        installConfig.Config.IsSCOS(),
 		IsOKD:                         installConfig.Config.IsOKD(),
-		AROWorkerRegistries:           aroWorkerRegistries(installConfig.Config.ImageDigestSources),
 		AROIngressIP:                  aroDNSConfig.IngressIP,
 		AROIngressInternal:            installConfig.Config.Publish == types.InternalPublishingStrategy,
 		AROImageRegistryHTTPSecret:    aroImageRegistryConfig.HTTPSecret,
@@ -188,7 +186,6 @@ func (m *Manifests) generateBootKubeManifests(dependencies asset.Parents) []*ass
 		&bootkube.KubeSystemConfigmapRootCA{},
 		&bootkube.MachineConfigServerTLSSecret{},
 		&bootkube.OpenshiftConfigSecretPullSecret{},
-		&bootkube.AROWorkerRegistries{},
 		&bootkube.AROIngressService{},
 		&bootkube.AROImageRegistry{},
 	} {
